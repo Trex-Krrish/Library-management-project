@@ -22,7 +22,7 @@ To get started with this project, follow the instructions below.
 ### Installation
 1. Clone the repository:
     ```sh
-    git clone <repository-url>
+    git clone https://github.com/Trex-Krrish/Library-management-project.git
     ```
 2. Navigate to the project directory:
     ```sh
