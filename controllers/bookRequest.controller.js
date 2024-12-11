@@ -48,7 +48,22 @@ exports.updateBookRequestStatus = async (req, res) => {
             return res.status(404).json({ message: 'Book request not found' });
         }
 
-        // Update the status of the book request
+        if (bookRequest.status === 'accepted' && (satus === 'rejected' || status === 'pending')) {
+            return res.status(400).json({ message: 'Cannot change status from accepted to pending or rejected' });
+        }
+
+        if(bookRequest.status === 'returned' && status !== 'returned') {
+            return res.status(400).json({ message: 'Cannot change status from returned to anything else' });
+        }
+
+        if (bookRequest.status === 'rejected' && status !== 'rejected'){
+            return res.status(400).json({ message: 'Cannot change status from rejected to anything else' });
+        }
+
+        if (bookRequest.status === status){
+            return res.status(400).json({ message: 'Status is already set to ' + status });
+        }
+
         bookRequest.status = status;
         await bookRequest.save();
 
@@ -64,12 +79,17 @@ exports.updateBookRequestStatus = async (req, res) => {
 
         if (status === 'returned') {
             const book = await Book.findById(bookRequest.book);
+
+            if(bookRequest.status !== 'accepted') {
+                return res.status(400).json({ message: 'Book request must be accepted before it can be returned' });
+            }
+
             book.stocks += 1;
             bookRequest.returned = true;
             await book.save();
             await bookRequest.save();
         }
-        
+
         res.json({ message: 'Book request status updated successfully', bookRequest });
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });

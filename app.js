@@ -16,5 +16,6 @@ app.get('/', (req, res) => {
 app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/books', require('./routes/book.routes'));
 app.use('/api/book-requests', require('./routes/bookRequest.routes'));
+app.use('/api/wishlist', require('./routes/wishlist.routes'));
 
 module.exports = app;
